@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" type="text/css" href="../static/login.css">
+    <script src="../static/jquery-1.12.4.min.js"></script>
+</head>
+<body>
+
+<div id="loginForm">
+
+    <h1>学生管理系统</h1>
+    <div class="text">
+        <input type="text" name="account" placeholder="账号">
+    </div>
+    <div class="text">
+        <input type="password" name="pwd" placeholder="密码">
+    </div>
+    <div class="text">
+        <input type="button" id="login" onclick="login()" value="登录">
+    </div>
+    <div id="result" class="text"></div>
+</div>
+
+
+<script type="text/javascript">
+    // 登录
+    function login(){
+        $.ajaxSetup({
+            data:{csrfmiddlewaretoken:'{{ csrf_token }}'}
+        });
+        var account = $("input[name='account']").val();
+        var pwd = $("input[name='pwd']").val();
+        $.ajax({
+            url:'{% url 'checkLogin' %}',
+            type:"post",
+            data:{
+                account:account,
+                pwd:pwd
+            },
+            success:function (data) {
+                if (data['status'] == 1){
+                    location.href = {% url 'studentManage' %};
+                }
+                else {
+                    $("#result").html(data['msg']);
+                }
+
+            },
+            error:function () {
+                alert('false');
+            }
+        });
+
+    }
+
+
+
+    $(function () {
+        $(window).keydown(function (event) {
+            if (event.keyCode==13){
+                login();
+            }
+        })
+
+
+    });
+
+
+</script>
+</body>
+</html>
